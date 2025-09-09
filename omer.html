@@ -19,7 +19,6 @@
     color:#fff;
   }
 
-  /* Beyaz neon mesaj */
   h1 {
     font-size:24px;
     text-align:center;
@@ -73,8 +72,7 @@
   .heart {
     position:absolute;
     font-size:20px;
-    color:#ffffff; /* beyaz kalpler */
-    opacity:0.3 + Math.random()*0.2;
+    color:#ffffff;
     user-select:none;
     animation: moveHeart linear infinite;
   }
@@ -82,6 +80,16 @@
   @keyframes moveHeart {
     0% {transform: translateX(110%);}
     100% {transform: translateX(-10%);}
+  }
+
+  .error-message {
+    margin-top:10px;
+    color:#ff4d4d;
+    font-weight:bold;
+    font-size:16px;
+    text-align:center;
+    opacity:0;
+    transition: opacity 0.5s;
   }
 </style>
 </head>
@@ -94,11 +102,13 @@
   <button class="yesBtn" id="yesBtn">Evet</button>
   <button class="noBtn" id="noBtn">Hayır</button>
 </div>
+<div class="error-message" id="errorMsg"></div>
 
 <script>
 const yesBtn = document.getElementById('yesBtn');
 const noBtn = document.getElementById('noBtn');
 const heartsContainer = document.getElementById('hearts');
+const errorMsg = document.getElementById('errorMsg');
 
 // Sonsuz kalpler oluştur
 function createHeart() {
@@ -112,19 +122,37 @@ function createHeart() {
   heartsContainer.appendChild(heart);
   setTimeout(() => { heart.remove(); }, 6000);
 }
-setInterval(createHeart, 150); // yoğun ve sürekli kalpler
+setInterval(createHeart, 150);
 
-// Hayır tıklandığında Evet butonu büyüsün
+// Hayır tıklandığında
+const errorMessages = [
+  "Ups, bir hata oluştu 😅",
+  "Hmmm… bu doğru değil 🤔",
+  "Tekrar denemelisin 😜",
+  "Bence başka bir cevap daha uygun 😉"
+];
+
 noBtn.addEventListener('click', () => {
+  // Evet butonunu daha fazla büyüt
   const style = window.getComputedStyle(yesBtn);
   const currentSize = parseFloat(style.fontSize);
-  yesBtn.style.fontSize = (currentSize + 2) + 'px';
+  yesBtn.style.fontSize = (currentSize + 4) + 'px'; // öncekinden daha fazla
+
+  // Hata mesajı göster
+  const randomMsg = errorMessages[Math.floor(Math.random() * errorMessages.length)];
+  errorMsg.innerText = randomMsg;
+  errorMsg.style.opacity = 1;
+
+  // 2 saniye sonra kaybolsun
+  setTimeout(() => {
+    errorMsg.style.opacity = 0;
+  }, 2000);
 });
 
 // Evet tıklandığında WhatsApp aç
 yesBtn.addEventListener('click', () => {
-  const message = encodeURIComponent("26 Eylül akşamı için bir planım var ama tek eksiğim sensin. O akşamı bana ayırır mısın?");
-  const waLink = "https://wa.me/?text=" + message;
+  const message = encodeURIComponent("EVET, HAYATIMDA EN ÇOK İSTEĞİM ŞEY BU");
+  const waLink = "https://wa.me/905393001099?text=" + message;
   window.open(waLink, '_blank');
 });
 </script>
